@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agent Dashboard - AgentWorks</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/logo-dark.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="site.css">
+  <link rel="stylesheet" href="agent.css">
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="agent.js"></script>
+  <!-- seo-meta -->
+  <meta name="robots" content="noindex,nofollow">
+</head>
+<body>
+  <header class="agent-header">
+    <div class="agent-header-inner">
+      <div class="agent-header-left">
+        <a href="/"><img src="/img/logo-full-light.png" alt="StructureWorks"></a>
+        <h1>AgentWorks<span>Dashboard</span></h1>
+      </div>
+      <div class="agent-header-right">
+        <span class="agent-user-name" id="user-name"></span>
+        <button class="btn-signout" onclick="agentLogout()">Sign Out</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="agent-main" id="main-content">
+    <p style="color:#94a3b8; text-align:center; padding:48px;">Loading...</p>
+  </main>
+
+  <script>
+    requireAuth((user, profile) => {
+      if (!profile) {
+        // No agent profile — might be new user, create basic profile
+        document.getElementById('main-content').innerHTML = `
+          <div class="pending-banner">
+            <h2>Welcome to AgentWorks</h2>
+            <p>Your account is being set up. Please log out and log back in, or contact us at (865) 630-4073.</p>
+          </div>
+        `;
+        return;
+      }
+
+      document.getElementById('user-name').textContent = profile.fullName;
+
+      if (profile.role === 'admin') {
+        window.location.href = '/agent-admin';
+        return;
+      }
+
+      if (!profile.isApproved) {
+        document.getElementById('main-content').innerHTML = `
+          <div class="pending-banner">
+            <h2>Account Pending Approval</h2>
+            <p>Your AgentWorks account is pending approval by the StructureWorks team. You'll receive an email once your account has been approved and you can start submitting projects.</p>
+            <p style="margin-top:16px; font-size:0.9rem;">Questions? Call us at <a href="tel:8656304073" style="color:#92400e; font-weight:600;">(865) 630-4073</a></p>
+          </div>
+        `;
+        return;
+      }
+
+      loadDashboard(user.uid);
+    });
+
+    function loadDashboard(uid) {
+      getMyProjects(uid).then(projects => {
+        const active = projects.filter(p => ['submitted','reviewing','approved','in_progress'].includes(p.status)).length;
+        const completed = projects.filter(p => p.status === 'completed').length;
+
+        let html = `
+          <div class="summary-cards">
+            <div class="summary-card">
+              <span class="card-number">${projects.length}</span>
+              <span class="card-label">Total Projects</span>
+            </div>
+            <div class="summary-card">
+              <span class="card-number">${active}</span>
+              <span class="card-label">Active Projects</span>
+            </div>
+            <div class="summary-card">
+              <span class="card-number">${completed}</span>
+              <span class="card-label">Completed</span>
+            </div>
+          </div>
+
+          <div class="projects-section">
+            <div class="projects-header">
+              <h2>My Projects</h2>
+              <a href="/agent-submit" class="btn btn-primary">+ Submit New Project</a>
+            </div>
+        `;
+
+        if (projects.length === 0) {
+          html += `<div class="no-projects">
+            <p>No projects yet. Submit your first project to get started!</p>
+            <a href="/agent-submit" class="btn btn-primary" style="margin-top:16px;">Submit New Project</a>
+          </div>`;
+        } else {
+          html += `<table class="projects-table">
+            <thead><tr>
+              <th>Property Address</th>
+              <th>Client</th>
+              <th>Status</th>
+              <th>Close Date</th>
+              <th>Submitted</th>
+            </tr></thead><tbody>`;
+
+          projects.forEach((p, i) => {
+            html += `<tr onclick="toggleDetail(${i})" style="cursor:pointer;">
+              <td class="address">${p.propertyAddress || '--'}</td>
+              <td>${p.clientName || '--'}</td>
+              <td>${statusBadge(p.status)}</td>
+              <td>${p.targetCloseDate || '--'}</td>
+              <td>${formatDate(p.createdAt)}</td>
+            </tr>
+            <tr><td colspan="5" class="project-detail" id="detail-${i}" style="padding:0;">
+              <div class="project-detail" id="detail-inner-${i}">
+                <div class="detail-grid">
+                  <div class="detail-item"><label>City/State</label><span>${p.city || 'Knoxville'}, ${p.state || 'TN'} ${p.zipCode || ''}</span></div>
+                  <div class="detail-item"><label>Project Type</label><span>${(p.projectType || '').replace(/_/g, ' ')}</span></div>
+                  <div class="detail-item"><label>Urgency</label><span>${p.urgency || 'standard'}</span></div>
+                  <div class="detail-item"><label>Client Phone</label><span>${p.clientPhone || '--'}</span></div>
+                  <div class="detail-item"><label>Client Email</label><span>${p.clientEmail || '--'}</span></div>
+                  <div class="detail-item"><label>Budget</label><span>${p.estimatedBudget || '--'}</span></div>
+                </div>
+                <div class="detail-description">
+                  <label>Description</label>
+                  <p>${p.description || 'No description provided.'}</p>
+                </div>
+              </div>
+            </td></tr>`;
+          });
+
+          html += `</tbody></table>`;
+        }
+
+        html += `</div>`;
+        document.getElementById('main-content').innerHTML = html;
+      });
+    }
+
+    function toggleDetail(i) {
+      const el = document.getElementById('detail-inner-' + i);
+      el.classList.toggle('open');
+    }
+  </script>
+</body>
+</html>

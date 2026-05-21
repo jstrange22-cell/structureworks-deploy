@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+# Agent portal (login/dashboard) — not for search indexing
+Disallow: /agent-login
+Disallow: /agent-dashboard
+Disallow: /agent-admin
+Disallow: /agent-submit
+
+Sitemap: https://structureworkstn.com/sitemap.xml

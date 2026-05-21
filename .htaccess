@@ -1,0 +1,46 @@
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # Pretty URLs (before directory check so /blog doesn't resolve to blog/ dir)
+  RewriteRule ^blog$ blog.html [L]
+  RewriteCond %{REQUEST_URI} !\.html$
+  RewriteRule ^blog/(.+)$ blog/$1.html [L]
+
+  # Don't rewrite existing files/directories
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # Exclude subdirectories from rewrite
+  RewriteRule ^projectworks/ - [L]
+  RewriteRule ^api/ - [L]
+  RewriteRule ^img/ - [L]
+  RewriteRule ^uploads/ - [L]
+  RewriteRule ^includes/ - [L]
+
+  # Pretty URLs for pages
+  RewriteRule ^about$ about.html [L]
+  RewriteRule ^services$ services.html [L]
+  RewriteRule ^contact$ contact.html [L]
+  RewriteRule ^agentworks$ agentworks.html [L]
+  RewriteRule ^agent-login$ agent-login.html [L]
+  RewriteRule ^agent-dashboard$ agent-dashboard.html [L]
+  RewriteRule ^agent-admin$ agent-admin.html [L]
+  RewriteRule ^agent-submit$ agent-submit.html [L]
+</IfModule>
+
+# Caching for static assets
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/css "access plus 1 month"
+  ExpiresByType application/javascript "access plus 1 month"
+  ExpiresByType image/png "access plus 1 year"
+  ExpiresByType image/jpeg "access plus 1 year"
+  ExpiresByType image/svg+xml "access plus 1 year"
+</IfModule>
+
+# Compression
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css application/javascript
+</IfModule>

@@ -1,0 +1,14 @@
+# Secrets / local config
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# OS cruft
+.DS_Store
+Thumbs.db
+desktop.ini
