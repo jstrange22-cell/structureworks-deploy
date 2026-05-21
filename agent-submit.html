@@ -3,26 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Submit Project - AgentWorks</title>
+  <title>Submit Job - AgentWorks</title>
   <link rel="icon" type="image/png" sizes="32x32" href="/img/logo-dark.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="site.css">
-  <link rel="stylesheet" href="agent.css">
+  <link rel="stylesheet" href="site.css?v=20260523">
+  <link rel="stylesheet" href="agent.css?v=20260523">
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-  <script src="agent.js"></script>
-  <!-- seo-meta -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"></script>
+  <script src="agent.js?v=20260523"></script>
   <meta name="robots" content="noindex,nofollow">
 </head>
 <body>
   <header class="agent-header">
     <div class="agent-header-inner">
       <div class="agent-header-left">
-        <a href="/"><img src="/img/logo-full-light.png?v=20260521" alt="StructureWorks"></a>
-        <h1>AgentWorks<span>Submit Project</span></h1>
+        <a href="/"><img src="/img/logo-full-light.png?v=20260523" alt="StructureWorks"></a>
+        <h1>AgentWorks<span>Submit Job</span></h1>
       </div>
       <div class="agent-header-right">
         <a href="/agent-dashboard" class="btn-signout" style="margin-right:8px;">Back to Dashboard</a>
@@ -33,8 +33,8 @@
 
   <main class="agent-main">
     <div class="contact-form-wrapper" style="max-width:720px; margin:0 auto;">
-      <h3 style="font-size:1.4rem; margin-bottom:8px;">Submit New Project</h3>
-      <p style="color:#64748b; margin-bottom:24px; font-size:0.95rem;">Fill out the details below and our team will review your project within 48 hours.</p>
+      <h3 style="font-size:1.4rem; margin-bottom:8px;">Submit a New Job</h3>
+      <p style="color:#64748b; margin-bottom:24px; font-size:0.95rem;">Add the property + client details and attach photos and the inspection report. Our team reviews and follows up — you can track status on your dashboard.</p>
 
       <form class="contact-form" id="submit-form" onsubmit="handleProjectSubmit(event)">
         <div class="form-group">
@@ -46,15 +46,13 @@
             <label for="city">City</label>
             <input type="text" id="city" value="Knoxville" placeholder="City">
           </div>
-          <div class="form-row" style="gap:16px;">
-            <div class="form-group">
-              <label for="state">State</label>
-              <input type="text" id="state" value="TN" placeholder="State" maxlength="2">
-            </div>
-            <div class="form-group">
-              <label for="zip">ZIP</label>
-              <input type="text" id="zip" placeholder="37919" maxlength="10">
-            </div>
+          <div class="form-group">
+            <label for="state">State</label>
+            <input type="text" id="state" value="TN" placeholder="State" maxlength="2">
+          </div>
+          <div class="form-group">
+            <label for="zip">ZIP</label>
+            <input type="text" id="zip" placeholder="37919" maxlength="10">
           </div>
         </div>
 
@@ -79,12 +77,14 @@
 
         <div class="form-row">
           <div class="form-group">
-            <label for="project-type">Project Type *</label>
+            <label for="project-type">Job Type *</label>
             <select id="project-type" required>
-              <option value="inspection_repair">Inspection Repair</option>
-              <option value="renovation">Renovation</option>
-              <option value="maintenance">Maintenance</option>
-              <option value="other">Other</option>
+              <option value="Inspection Repair">Inspection Repair</option>
+              <option value="Roofing">Roofing</option>
+              <option value="Deck / Exterior">Deck / Exterior</option>
+              <option value="Renovation">Renovation</option>
+              <option value="Maintenance">Maintenance</option>
+              <option value="Other">Other</option>
             </select>
           </div>
           <div class="form-group">
@@ -114,58 +114,88 @@
           </div>
         </div>
         <div class="form-group">
-          <label for="description">Project Description *</label>
+          <label for="description">Job Description *</label>
           <textarea id="description" rows="5" placeholder="Describe the work needed, inspection findings, timeline requirements, and any other details..." required></textarea>
         </div>
-        <button type="submit" class="btn btn-primary btn-lg btn-full" id="submit-btn">Submit Project</button>
+
+        <div style="border-top:1px solid #e2e8f0; margin:8px 0 16px;"></div>
+
+        <div class="form-group">
+          <label for="photos">Photos <span style="font-weight:400; color:#94a3b8;">(inspection findings, damage, the area)</span></label>
+          <input type="file" id="photos" accept="image/*" multiple>
+          <p class="upload-hint">JPG/PNG — up to 30 photos.</p>
+        </div>
+        <div class="form-group">
+          <label for="pdfs">Inspection Report / Documents <span style="font-weight:400; color:#94a3b8;">(PDF)</span></label>
+          <input type="file" id="pdfs" accept="application/pdf" multiple>
+          <p class="upload-hint">PDF only — up to 10 files, 25&nbsp;MB each.</p>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-lg btn-full" id="submit-btn">Submit Job</button>
+        <p class="form-note" id="submit-note"></p>
       </form>
     </div>
   </main>
 
   <script>
     requireAuth((user, profile) => {
-      if (!profile || !profile.isApproved) {
-        window.location.href = '/agent-dashboard';
-        return;
-      }
+      // Any signed-in agent can submit (auto-approved). Profile is ensured by requireAuth.
     });
 
-    function handleProjectSubmit(e) {
+    async function handleProjectSubmit(e) {
       e.preventDefault();
       const btn = document.getElementById('submit-btn');
-      btn.textContent = 'Submitting...';
-      btn.disabled = true;
+      const note = document.getElementById('submit-note');
+      const original = btn.textContent;
 
-      const projectData = {
+      const photos = Array.from(document.getElementById('photos').files || []);
+      const pdfs = Array.from(document.getElementById('pdfs').files || []);
+      const files = [...photos, ...pdfs];
+
+      for (const f of files) {
+        if (f.size > 25 * 1024 * 1024) {
+          showToast(`${f.name} is too large (max 25MB).`, 'error');
+          return;
+        }
+      }
+
+      let details = document.getElementById('description').value;
+      const close = document.getElementById('close-date').value;
+      const budget = document.getElementById('budget').value;
+      if (close) details += `\nTarget close date: ${close}`;
+      if (budget) details += `\nEstimated budget: ${budget}`;
+
+      const job = {
         propertyAddress: document.getElementById('address').value,
         city: document.getElementById('city').value,
         state: document.getElementById('state').value,
-        zipCode: document.getElementById('zip').value,
+        zip: document.getElementById('zip').value,
         clientName: document.getElementById('client-name').value,
         clientPhone: document.getElementById('client-phone').value,
         clientEmail: document.getElementById('client-email').value,
         projectType: document.getElementById('project-type').value,
         urgency: document.getElementById('urgency').value,
-        targetCloseDate: document.getElementById('close-date').value,
-        estimatedBudget: document.getElementById('budget').value,
-        description: document.getElementById('description').value
+        description: details,
       };
 
-      createProject(projectData)
-        .then(() => {
-          btn.textContent = 'Project Submitted!';
-          btn.style.background = '#16a34a';
-          btn.style.borderColor = '#16a34a';
-          showToast('Project submitted successfully!');
-          setTimeout(() => {
-            window.location.href = '/agent-dashboard';
-          }, 1500);
-        })
-        .catch(err => {
-          showToast(err.message, 'error');
-          btn.textContent = 'Submit Project';
-          btn.disabled = false;
-        });
+      btn.disabled = true;
+      btn.textContent = files.length ? `Uploading ${files.length} file(s)...` : 'Submitting...';
+      note.textContent = '';
+
+      try {
+        await submitAgentJob(job, files);
+        btn.textContent = 'Job Submitted!';
+        btn.style.background = '#16a34a';
+        btn.style.borderColor = '#16a34a';
+        showToast('Job submitted! Our team will review and follow up.');
+        setTimeout(() => { window.location.href = '/agent-dashboard'; }, 1500);
+      } catch (err) {
+        showToast(err.message || 'Submission failed. Please try again.', 'error');
+        note.textContent = err.message || '';
+        note.style.color = '#dc2626';
+        btn.disabled = false;
+        btn.textContent = original;
+      }
     }
   </script>
 </body>

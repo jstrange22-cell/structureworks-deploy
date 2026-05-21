@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="site.css?v=20260521">
+  <link rel="stylesheet" href="site.css?v=20260523">
   <!-- seo-meta -->
   <link rel="canonical" href="https://structureworkstn.com/">
   <meta name="robots" content="index,follow">
@@ -31,7 +31,7 @@
   "name": "StructureWorks",
   "url": "https://structureworkstn.com/",
   "image": "https://structureworkstn.com/img/modern-farmhouse-hero.jpg",
-  "logo": "https://structureworkstn.com/img/logo-full-dark.png?v=20260521",
+  "logo": "https://structureworkstn.com/img/logo-full-dark.png?v=20260523",
   "telephone": "+1-865-630-4073",
   "email": "info@structureworkstn.com",
   "priceRange": "$$",
@@ -100,18 +100,31 @@
   ]
 }
   </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {"@type":"Question","name":"What areas does StructureWorks serve?","acceptedAnswer":{"@type":"Answer","text":"We serve Knoxville and the surrounding East Tennessee communities including Farragut, Maryville, Oak Ridge, Lenoir City, Sevierville, Alcoa, Powell, and Hardin Valley."}},
+      {"@type":"Question","name":"Is StructureWorks licensed and insured?","acceptedAnswer":{"@type":"Answer","text":"Yes. StructureWorks is fully licensed and insured in Tennessee, carries general liability and workers compensation coverage, and completes all work to current code."}},
+      {"@type":"Question","name":"Do you offer free estimates?","acceptedAnswer":{"@type":"Answer","text":"Yes — we provide free, no-obligation consultations and written estimates for residential and commercial projects across East Tennessee."}},
+      {"@type":"Question","name":"What types of projects do you take on?","acceptedAnswer":{"@type":"Answer","text":"Roofing, decks and outdoor living, kitchen and bath remodels, full home renovations, new construction, metal buildings, and commercial buildouts, plus AgentWorks inspection repairs for real estate agents."}}
+    ]
+  }
+  </script>
 </head>
 <body>
   <nav id="navbar">
   <div class="container nav-container">
     <a href="/" class="nav-logo">
-      <img src="/img/logo-full-light.png?v=20260521" alt="StructureWorks" class="logo-light">
-      <img src="/img/logo-full-dark.png?v=20260521" alt="StructureWorks" class="logo-dark">
+      <img src="/img/logo-full-light.png?v=20260523" alt="StructureWorks" class="logo-light">
+      <img src="/img/logo-full-dark.png?v=20260523" alt="StructureWorks" class="logo-dark">
     </a>
     <ul class="nav-links" id="nav-links">
       <li><a href="/">Home</a></li>
       <li><a href="/about">About</a></li>
       <li><a href="/services">Services</a></li>
+      <li><a href="/gallery">Projects</a></li>
       <li><a href="/blog">Blog</a></li>
       <li><a href="/contact">Contact</a></li>
       <li><a href="/agentworks" class="nav-agentworks">AgentWorks</a></li>
@@ -149,6 +162,16 @@
     </div>
   </section>
 
+  <!-- Trust strip -->
+  <div class="trust-strip">
+    <div class="container trust-row">
+      <span class="trust-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Licensed &amp; Insured</span>
+      <span class="trust-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Locally Owned in Knoxville</span>
+      <span class="trust-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg> Workmanship Warranty</span>
+      <span class="trust-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> Free Estimates</span>
+    </div>
+  </div>
+
   <!-- Services Preview -->
   <section class="section section-light">
     <div class="container">
@@ -158,10 +181,7 @@
       </div>
       <div class="services-grid">
         <div class="service-card">
-          <div class="service-image" style="background: url('/img/residential-construction.jpg?v=20260521') center/cover;">
-            <div class="service-icon-overlay">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="28" height="28"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6"/><path d="M9 9h.01M15 9h.01M9 13h.01M15 13h.01"/></svg>
-            </div>
+          <div class="service-image" style="background: url('/img/residential-construction.jpg?v=20260523') center/cover;">
           </div>
           <div class="service-content">
             <h3>Residential Construction</h3>
@@ -176,10 +196,7 @@
           </div>
         </div>
         <div class="service-card">
-          <div class="service-image" style="background: url('/img/interior-buildout.jpg?v=20260521') center/cover;">
-            <div class="service-icon-overlay">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="28" height="28"><path d="M3 21h18M3 7v14M21 7v14M6 7V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v3M9 21v-4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v4"/></svg>
-            </div>
+          <div class="service-image" style="background: url('/img/interior-buildout.jpg?v=20260523') center/cover;">
           </div>
           <div class="service-content">
             <h3>Commercial Construction</h3>
@@ -194,10 +211,7 @@
           </div>
         </div>
         <div class="service-card">
-          <div class="service-image" style="background: url('/img/luxury-deck.jpg?v=20260521') center/cover;">
-            <div class="service-icon-overlay">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="28" height="28"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0a1 1 0 01-1-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 01-1 1"/></svg>
-            </div>
+          <div class="service-image" style="background: url('/img/luxury-deck.jpg?v=20260523') center/cover;">
           </div>
           <div class="service-content">
             <h3>Exterior Services</h3>
@@ -212,10 +226,7 @@
           </div>
         </div>
         <div class="service-card">
-          <div class="service-image" style="background: url('/img/real-estate-agents.jpg?v=20260521') center/cover;">
-            <div class="service-icon-overlay">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="28" height="28"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M20 8v6M23 11h-6"/></svg>
-            </div>
+          <div class="service-image" style="background: url('/img/real-estate-agents.jpg?v=20260523') center/cover;">
           </div>
           <div class="service-content">
             <h3>AgentWorks</h3>
@@ -287,9 +298,28 @@
           </div>
         </div>
       </div>
+      <!-- Owner: replace the three testimonials above with real Google reviews when ready (and we can add Review schema once they're real). -->
       <div class="testimonial-cta">
         <p>Ready to join our satisfied clients?</p>
         <a href="/contact" class="btn-link">Get Your Free Quote Today</a>
+        <p style="margin-top:12px;"><a href="https://www.google.com/search?q=StructureWorks+Knoxville+TN+reviews" target="_blank" rel="noopener" class="btn-link">Read our Google reviews &rarr;</a></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header-center">
+        <span class="section-tag">FAQ</span>
+        <h2 class="section-title">Frequently Asked Questions</h2>
+        <p class="section-subtitle">Quick answers for Knoxville &amp; East Tennessee homeowners and businesses.</p>
+      </div>
+      <div class="faq-list">
+        <details class="faq-item"><summary>What areas does StructureWorks serve?</summary><div class="faq-a">We serve Knoxville and the surrounding East Tennessee communities including Farragut, Maryville, Oak Ridge, Lenoir City, Sevierville, Alcoa, Powell, and Hardin Valley. <a href="/service-areas">See all service areas &rarr;</a></div></details>
+        <details class="faq-item"><summary>Is StructureWorks licensed and insured?</summary><div class="faq-a">Yes. StructureWorks is fully licensed and insured in Tennessee, carries general liability and workers compensation coverage, and completes all work to current code.</div></details>
+        <details class="faq-item"><summary>Do you offer free estimates?</summary><div class="faq-a">Yes — we provide free, no-obligation consultations and written estimates for residential and commercial projects across East Tennessee. <a href="/contact">Request a free quote &rarr;</a></div></details>
+        <details class="faq-item"><summary>What types of projects do you take on?</summary><div class="faq-a">Roofing, decks and outdoor living, kitchen and bath remodels, full home renovations, new construction, metal buildings, and commercial buildouts — plus <a href="/agentworks">AgentWorks</a> inspection repairs for real estate agents.</div></details>
       </div>
     </div>
   </section>
@@ -370,6 +400,12 @@
     </div>
   </div>
 </footer>
-  <script src="site.js?v=20260521"></script>
+  <div class="sticky-call">
+    <a href="tel:8656304073" class="sc-call"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg> Call Now</a>
+    <a href="/contact" class="sc-quote"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><path d="M22 6l-10 7L2 6"/></svg> Free Quote</a>
+  </div>
+  <script>document.body.classList.add('has-sticky-call');</script>
+  <script src="analytics.js?v=20260523" defer></script>
+  <script src="site.js?v=20260523"></script>
 </body>
 </html>

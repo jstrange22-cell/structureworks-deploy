@@ -169,13 +169,8 @@ ul { list-style: none; }
 }
 .service-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(37,99,235,0.12); border-color: #bfdbfe; }
 .service-image {
-  height: 200px; position: relative; display: flex; align-items: center; justify-content: center;
+  height: 200px; position: relative;
 }
-.service-icon-overlay {
-  width: 56px; height: 56px; border-radius: 12px; background: rgba(255,255,255,0.15);
-  display: flex; align-items: center; justify-content: center; backdrop-filter: blur(8px);
-}
-.service-icon-overlay svg { color: #fff; }
 .service-content { padding: 28px; }
 .service-content h3 { font-size: 1.2rem; margin-bottom: 10px; color: #0f172a; font-weight: 700; }
 .service-content p { color: #64748b; font-size: 0.95rem; line-height: 1.6; margin-bottom: 16px; }
@@ -542,4 +537,160 @@ ul { list-style: none; }
   margin-top: 14px;
   font-size: 0.95rem;
   font-weight: 500;
+}
+
+/* ============================================================
+   Marketing / Campaign pages (Roofing, Decks, AgentWorks)
+   ============================================================ */
+
+/* ----- Split hero: headline + lead form side-by-side (SEO pages) ----- */
+.quote-hero {
+  position: relative; padding: 130px 0 64px; color: #fff;
+  background-size: cover; background-position: center;
+}
+.quote-hero::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(120deg, rgba(10,15,26,0.92) 0%, rgba(15,23,42,0.78) 45%, rgba(15,23,42,0.55) 100%);
+}
+.quote-hero-grid {
+  position: relative; z-index: 1; display: grid;
+  grid-template-columns: 1.1fr 0.9fr; gap: 48px; align-items: center;
+}
+.quote-hero-copy h1 {
+  font-family: 'Montserrat', sans-serif; font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.12; margin-bottom: 16px;
+}
+.quote-hero-copy h1 .accent { color: #60a5fa; }
+.quote-hero-copy .hero-sub { color: rgba(255,255,255,0.85); }
+.hero-checks { list-style: none; margin: 22px 0 28px; display: grid; gap: 10px; }
+.hero-checks li { display: flex; align-items: center; gap: 10px; font-size: 1rem; color: #e2e8f0; font-weight: 500; }
+.hero-checks svg { color: #34d399; flex-shrink: 0; }
+.hero-rating { display: flex; align-items: center; gap: 10px; margin-top: 6px; font-size: 0.9rem; color: rgba(255,255,255,0.85); }
+.stars { color: #fbbf24; letter-spacing: 1px; }
+
+/* Lead form card that sits in the hero */
+.lead-card {
+  background: #fff; border-radius: 16px; padding: 28px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.28); color: #1e293b;
+}
+.lead-card h2 { font-size: 1.35rem; color: #0f172a; margin-bottom: 4px; }
+.lead-card .lead-sub { color: #64748b; font-size: 0.9rem; margin-bottom: 18px; }
+.lead-card .contact-form { gap: 12px; }
+.lead-card .form-note { margin-top: 6px; }
+
+/* ----- Trust badge row ----- */
+.trust-row {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 14px 28px;
+  align-items: center;
+}
+.trust-badge {
+  display: inline-flex; align-items: center; gap: 9px; font-size: 0.9rem;
+  font-weight: 600; color: #334155;
+}
+.trust-badge svg { color: #2563eb; flex-shrink: 0; }
+.trust-strip { background: #f1f5f9; padding: 22px 0; border-bottom: 1px solid #e2e8f0; }
+
+/* ----- Process steps ----- */
+.steps-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; counter-reset: step; }
+.step-card { position: relative; background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 32px 24px 24px; }
+.step-num {
+  width: 44px; height: 44px; border-radius: 50%; background: #2563eb; color: #fff;
+  display: flex; align-items: center; justify-content: center; font-weight: 800;
+  font-size: 1.1rem; margin-bottom: 14px; font-family: 'Montserrat', sans-serif;
+}
+.step-card h3 { font-size: 1.05rem; color: #0f172a; margin-bottom: 8px; }
+.step-card p { color: #64748b; font-size: 0.9rem; line-height: 1.6; }
+
+/* ----- Before / After gallery ----- */
+.gallery-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.ba-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; overflow: hidden; transition: all 0.3s; }
+.ba-card:hover { box-shadow: 0 8px 24px rgba(37,99,235,0.1); transform: translateY(-2px); border-color: #bfdbfe; }
+.ba-images { display: grid; grid-template-columns: 1fr 1fr; }
+.ba-images figure { position: relative; margin: 0; }
+.ba-images img { display: block; width: 100%; height: 180px; object-fit: cover; }
+.ba-images figcaption {
+  position: absolute; bottom: 8px; left: 8px; background: rgba(15,23,42,0.82); color: #fff;
+  font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+  padding: 3px 8px; border-radius: 6px;
+}
+.ba-card .ba-body { padding: 16px 20px; }
+.ba-card .ba-body h4 { font-size: 1rem; color: #0f172a; margin-bottom: 4px; }
+.ba-card .ba-body p { color: #64748b; font-size: 0.85rem; }
+
+/* ----- Reviews ----- */
+.review-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 28px; }
+.review-card .stars { font-size: 1.05rem; margin-bottom: 12px; display: block; }
+.review-text { color: #475569; font-size: 0.95rem; line-height: 1.7; margin-bottom: 14px; font-style: italic; }
+.review-author { font-weight: 700; color: #0f172a; font-size: 0.92rem; }
+.review-meta { color: #94a3b8; font-size: 0.82rem; }
+
+/* ----- FAQ accordion (native <details>) ----- */
+.faq-list { max-width: 820px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
+.faq-item { background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; }
+.faq-item summary {
+  cursor: pointer; list-style: none; padding: 18px 22px; font-weight: 600; color: #0f172a;
+  font-size: 1rem; display: flex; justify-content: space-between; align-items: center; gap: 16px;
+}
+.faq-item summary::-webkit-details-marker { display: none; }
+.faq-item summary::after { content: '+'; color: #2563eb; font-size: 1.4rem; font-weight: 700; line-height: 1; }
+.faq-item[open] summary::after { content: '\2013'; }
+.faq-item .faq-a { padding: 0 22px 18px; color: #64748b; font-size: 0.95rem; line-height: 1.7; }
+
+/* ----- Big quote CTA band ----- */
+.cta-band { background: linear-gradient(135deg, #1d4ed8, #2563eb); color: #fff; text-align: center; }
+.cta-band h2 { color: #fff; font-family: 'Montserrat', sans-serif; font-size: clamp(1.6rem,3vw,2.2rem); margin-bottom: 10px; }
+.cta-band p { color: rgba(255,255,255,0.9); margin-bottom: 22px; font-size: 1.05rem; }
+
+/* ----- Sticky mobile click-to-call bar ----- */
+.sticky-call { display: none; }
+@media (max-width: 768px) {
+  .sticky-call {
+    display: flex; position: fixed; bottom: 0; left: 0; right: 0; z-index: 900;
+    box-shadow: 0 -4px 16px rgba(0,0,0,0.18);
+  }
+  .sticky-call a { flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 14px 8px; font-weight: 700; font-size: 0.95rem; color: #fff; }
+  .sticky-call .sc-call { background: #16a34a; }
+  .sticky-call .sc-quote { background: #2563eb; }
+  .sticky-call svg { width: 18px; height: 18px; }
+  body.has-sticky-call { padding-bottom: 56px; }
+}
+
+/* ============================================================
+   Campaign Landing Pages (/lp/*) — distraction-free, one CTA
+   ============================================================ */
+.lp-body { background: #f8fafc; }
+.lp-bar {
+  position: sticky; top: 0; z-index: 50; background: #0a0f1a;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 20px;
+}
+.lp-bar img { height: 30px; }
+.lp-bar .lp-phone { color: #fff; font-weight: 700; font-size: 1rem; display: inline-flex; align-items: center; gap: 8px; }
+.lp-bar .lp-phone svg { color: #34d399; }
+.lp-hero {
+  position: relative; color: #fff; padding: 40px 20px 56px;
+  background-size: cover; background-position: center;
+}
+.lp-hero::before { content: ''; position: absolute; inset: 0; background: linear-gradient(120deg, rgba(10,15,26,0.93), rgba(15,23,42,0.7)); }
+.lp-hero-inner { position: relative; z-index: 1; max-width: 1040px; margin: 0 auto;
+  display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 40px; align-items: center; }
+.lp-hero h1 { font-family: 'Montserrat', sans-serif; font-size: clamp(1.9rem, 4.4vw, 2.9rem); line-height: 1.1; margin-bottom: 14px; }
+.lp-hero h1 .accent { color: #60a5fa; }
+.lp-hero .lp-sub { color: rgba(255,255,255,0.88); font-size: 1.08rem; line-height: 1.6; margin-bottom: 20px; }
+.lp-section { max-width: 1040px; margin: 0 auto; padding: 48px 20px; }
+.lp-section h2 { text-align: center; font-family: 'Montserrat', sans-serif; font-size: clamp(1.5rem,3vw,2rem); color: #0f172a; margin-bottom: 8px; }
+.lp-section .lp-section-sub { text-align: center; color: #64748b; max-width: 620px; margin: 0 auto 32px; }
+.lp-foot { background: #0a0f1a; color: rgba(255,255,255,0.6); text-align: center; padding: 28px 20px; font-size: 0.85rem; }
+.lp-foot a { color: #60a5fa; }
+
+@media (max-width: 860px) {
+  .quote-hero-grid { grid-template-columns: 1fr; gap: 32px; }
+  .lp-hero-inner { grid-template-columns: 1fr; gap: 28px; }
+  .steps-grid { grid-template-columns: 1fr 1fr; }
+  .gallery-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 768px) {
+  .steps-grid { grid-template-columns: 1fr; }
+  .quote-hero { padding-top: 110px; }
 }

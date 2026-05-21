@@ -90,6 +90,11 @@ async function handleSubmit(e) {
     const out = await res.json().catch(() => ({}));
     if (!res.ok || !out.ok) throw new Error(out.error || 'Request failed');
 
+    // Fire ad-pixel conversion (no-ops until pixel IDs are set in analytics.js).
+    if (typeof window.swTrack === 'function') {
+      window.swTrack('Lead', { source: data.source || 'website_contact_form', page: data.page });
+    }
+
     btn.textContent = 'Quote Request Sent!';
     btn.style.background = '#16a34a';
     btn.style.borderColor = '#16a34a';
