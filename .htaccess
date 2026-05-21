@@ -7,6 +7,11 @@
   RewriteCond %{REQUEST_URI} !\.html$
   RewriteRule ^blog/(.+)$ blog/$1.html [L]
 
+  # Service areas (before directory check so /service-areas doesn't resolve to the dir)
+  RewriteRule ^service-areas$ service-areas.html [L]
+  RewriteCond %{REQUEST_URI} !\.html$
+  RewriteRule ^service-areas/(.+)$ service-areas/$1.html [L]
+
   # Don't rewrite existing files/directories
   RewriteCond %{REQUEST_FILENAME} -f [OR]
   RewriteCond %{REQUEST_FILENAME} -d
@@ -19,10 +24,17 @@
   RewriteRule ^uploads/ - [L]
   RewriteRule ^includes/ - [L]
 
+  # Campaign landing pages (/lp/roofing -> lp/roofing.html)
+  RewriteRule ^lp/([a-z0-9-]+)$ lp/$1.html [L]
+
   # Pretty URLs for pages
   RewriteRule ^about$ about.html [L]
+  RewriteRule ^gallery$ gallery.html [L]
   RewriteRule ^services$ services.html [L]
   RewriteRule ^contact$ contact.html [L]
+  RewriteRule ^roofing$ roofing.html [L]
+  RewriteRule ^decks$ decks.html [L]
+  RewriteRule ^financing$ financing.html [L]
   RewriteRule ^agentworks$ agentworks.html [L]
   RewriteRule ^agent-login$ agent-login.html [L]
   RewriteRule ^agent-dashboard$ agent-dashboard.html [L]
