@@ -191,9 +191,14 @@
   }
 
   /* ---------- page transforms ---------- */
+  /* Add Roofing to the main nav (not the footer, which already links it). */
   function navAll(html, path) {
-    if (html.indexOf(NAV_ROOFING) !== -1 || html.indexOf(NAV_SERVICES) === -1) return html;
-    return replaceOnce(html, NAV_SERVICES, NAV_SERVICES + '\n        ' + NAV_ROOFING, path + ' nav');
+    var s = html.indexOf('<nav id="navbar">');
+    if (s === -1) return html;
+    var nav = elementAt(html, s, 'nav');
+    if (nav.indexOf('href="/roofing"') !== -1 || nav.indexOf(NAV_SERVICES) === -1) return html;
+    var patched = replaceOnce(nav, NAV_SERVICES, NAV_SERVICES + '\n        ' + NAV_ROOFING, path + ' nav');
+    return html.slice(0, s) + patched + html.slice(s + nav.length);
   }
 
   function roofing(html) {
