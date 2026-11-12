@@ -330,7 +330,7 @@
   function siteCss(css) {
     if (css.indexOf('/* sw-division nav fit') !== -1) return css;
     return css.replace(/\s*$/, '\n\n') + CSS_MARK + '\n' +
-      '@media (min-width: 769px) and (max-width: 1240px) {\n' +
+      '@media (min-width: 769px) and (max-width: 1280px) {\n' +
       '  .nav-links { gap: 16px; }\n  .nav-links a { font-size: 13.5px; }\n' +
       '  .nav-phone, .nav-right .btn { white-space: nowrap; }\n  .nav-right { gap: 10px; }\n}\n' +
       '@media (min-width: 769px) and (max-width: 1060px) {\n' +
