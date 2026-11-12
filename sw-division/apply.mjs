@@ -3,7 +3,7 @@
  *
  *   node sw-division/apply.mjs <live-snapshot-dir> <out-dir>
  *
- * Reads every .html file plus sitemap.xml from the snapshot, writes only changed and new
+ * Reads every .html file plus sitemap.xml and site.css from the snapshot, writes only changed and new
  * files to <out-dir> (same relative paths), copies the division's static assets
  * (css/sw-division.css, js/sw-division.js, js/vendor/*) into <out-dir>, and prints a report.
  * Fails loudly, writing nothing, if any anchor is missing or appears more than once. */
@@ -25,7 +25,7 @@ function walk(dir, base = dir, acc = []) {
     if (ent.isDirectory()) {
       if (['img', 'fonts', 'node_modules', '.git', 'uploads', 'projectworks'].includes(ent.name)) continue;
       walk(full, base, acc);
-    } else if (/\.html$/.test(ent.name) || ent.name === 'sitemap.xml') {
+    } else if (/\.html$/.test(ent.name) || ent.name === 'sitemap.xml' || path.relative(base, full) === 'site.css') {
       acc.push(path.relative(base, full).split(path.sep).join('/'));
     }
   }

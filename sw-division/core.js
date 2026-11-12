@@ -193,6 +193,8 @@
   /* ---------- page transforms ---------- */
   /* Add Roofing to the main nav (not the footer, which already links it). */
   function navAll(html, path) {
+    // Bust the browser cache for the patched site.css on every page that loads it.
+    html = html.replace(/(["\/]site\.css\?v=)\d+/g, '$1' + VERSION);
     var s = html.indexOf('<nav id="navbar">');
     if (s === -1) return html;
     var nav = elementAt(html, s, 'nav');
@@ -321,6 +323,23 @@
     return replaceOnce(xml, '</urlset>', add + '</urlset>', 'sitemap end');
   }
 
+
+  /* Header fit: with Roofing added the desktop nav needs room. Tighten it from 769-1240px
+   * and switch to the menu button from 769-1060px. Appended once to site.css. */
+  var CSS_MARK = '/* sw-division nav fit ' + VERSION + ' */';
+  function siteCss(css) {
+    if (css.indexOf('/* sw-division nav fit') !== -1) return css;
+    return css.replace(/\s*$/, '\n\n') + CSS_MARK + '\n' +
+      '@media (min-width: 769px) and (max-width: 1240px) {\n' +
+      '  .nav-links { gap: 16px; }\n  .nav-links a { font-size: 13.5px; }\n' +
+      '  .nav-phone, .nav-right .btn { white-space: nowrap; }\n  .nav-right { gap: 10px; }\n}\n' +
+      '@media (min-width: 769px) and (max-width: 1060px) {\n' +
+      '  .nav-links, .nav-right { display: none; }\n  .mobile-toggle { display: block; }\n' +
+      '  .nav-links.open { display: flex; flex-direction: column; gap: 0; position: absolute; top: 100%; left: 0; right: 0; background: #fff; padding: 16px 24px; box-shadow: 0 8px 24px rgba(0,0,0,0.1); }\n' +
+      '  .nav-links.open a { color: var(--ink-soft) !important; padding: 12px 0; border-bottom: 1px solid #f1f5f9; }\n' +
+      '  .nav-links.open a::after { display: none; }\n}\n';
+  }
+
   /* files: { 'roofing.html': '...', 'exteriors.html': '...', 'sitemap.xml': '...', '<other>.html': '...' }
    * returns { out: { path: newContent } (changed or new files only), report: [lines] } */
   function applyAll(files) {
@@ -345,6 +364,9 @@
       var s = sitemap(files['sitemap.xml']);
       if (s !== files['sitemap.xml']) { out['sitemap.xml'] = s; report.push('sitemap.xml: +6 city URLs, lastmod roofing/exteriors'); }
     } else { throw new Error('sitemap.xml missing from snapshot'); }
+    if (!files['site.css']) throw new Error('site.css missing from snapshot');
+    var sc = siteCss(files['site.css']);
+    if (sc !== files['site.css']) { out['site.css'] = sc; report.push('site.css: header fit for the 8-link nav'); }
     return { out: out, report: report };
   }
 
