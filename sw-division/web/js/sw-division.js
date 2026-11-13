@@ -176,6 +176,9 @@
       .from(h.querySelectorAll('.hero-sub'), { y: 22, opacity: 0, duration: 0.6 }, '-=0.45')
       .from(h.querySelectorAll('.hero-buttons > *'), { y: 18, opacity: 0, duration: 0.5, stagger: 0.1 }, '-=0.35');
 
+    // Never leave the headline hidden if animation frames are throttled (background tab, slow device).
+    setTimeout(function () { if (tl.progress() < 1) tl.progress(1); }, 2600);
+
     if (!h.querySelector('.sw-scrollcue')) {
       var cue = document.createElement('div');
       cue.className = 'sw-scrollcue';
