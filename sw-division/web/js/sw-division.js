@@ -220,7 +220,7 @@
     });
   }
 
-  /* ===== Pinned "How it works": steps light up in order as you scroll ===== */
+  /* ===== "How it works": steps light up in order as you scroll ===== */
   function processPin() {
     var grid = document.querySelector('main .steps-grid');
     if (!grid) return;
@@ -234,20 +234,13 @@
     grid.parentNode.insertBefore(track, grid);
     var fill = track.firstChild;
 
-    ST.matchMedia({
-      '(min-width: 1025px)': function () {
-        gsap.set(steps, { opacity: 0.25, y: 24 });
-        var tl = gsap.timeline({ scrollTrigger: { trigger: section, start: 'top top+=80', end: '+=' + (steps.length * 260), pin: true, scrub: 0.6, anticipatePin: 1 } });
-        steps.forEach(function (s, i) {
-          tl.to(s, { opacity: 1, y: 0, duration: 1, ease: 'power2.out' }, i)
-            .to(fill, { scaleX: (i + 1) / steps.length, duration: 1, ease: 'none' }, i);
-        });
-        return function () { gsap.set(steps, { clearProps: 'all' }); gsap.set(fill, { clearProps: 'all' }); };
-      },
-      '(max-width: 1024px)': function () {
-        gsap.from(steps, { y: 40, opacity: 0, duration: 0.6, ease: 'power2.out', stagger: 0.1, scrollTrigger: { trigger: grid, start: 'top 88%', once: true } });
-        gsap.to(fill, { scaleX: 1, ease: 'none', scrollTrigger: { trigger: grid, start: 'top 85%', end: 'bottom 60%', scrub: true } });
-      }
+    // Scroll-linked, not pinned: steps light up in order and the bar fills as the section
+    // passes through the viewport. Pinning a short section left a blank screen below it.
+    gsap.set(steps, { opacity: 0.2, y: 30 });
+    var tl = gsap.timeline({ scrollTrigger: { trigger: grid, start: 'top 80%', end: 'bottom 45%', scrub: 0.5 } });
+    steps.forEach(function (s, i) {
+      tl.to(s, { opacity: 1, y: 0, duration: 1, ease: 'power2.out' }, i * 0.8)
+        .to(fill, { scaleX: (i + 1) / steps.length, duration: 1, ease: 'none' }, i * 0.8);
     });
   }
 

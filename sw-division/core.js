@@ -181,7 +181,7 @@
 
   function citiesSection(exceptSlug, title) {
     var cards = CITIES.filter(function (c) { return c.slug !== exceptSlug; }).map(function (c) {
-      return '        <a class="sw-city-card" href="/roofing-' + c.slug + '">Roofing in ' + esc(c.name) + ' <span>' + esc(c.county) + '</span></a>';
+      return '        <a class="sw-city-card" href="/roofing-' + c.slug + '"><strong>Roofing in ' + esc(c.name) + '</strong><span>' + esc(c.county) + '</span></a>';
     }).join('\n');
     return '\n  <section class="section section-light" id="roofing-near-you">\n    <div class="container">\n' +
       '      <div class="section-header-center">\n        <span class="section-tag">Service Area</span>\n' +
