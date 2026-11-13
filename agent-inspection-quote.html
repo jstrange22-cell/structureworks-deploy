@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inspection Quote - AgentWorks</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/logo-dark.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="site.css">
+  <link rel="stylesheet" href="agent.css">
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"></script>
+  <script src="agent.js"></script>
+  <meta name="robots" content="noindex,nofollow">
+  <style>
+    .iq-table { width:100%; border-collapse:collapse; font-size:0.9rem; }
+    .iq-table th { text-align:left; color:#475569; font-weight:600; padding:8px; border-bottom:2px solid #e2e8f0; }
+    .iq-table td { padding:8px; border-bottom:1px solid #e2e8f0; vertical-align:top; }
+    .iq-table tr.off td { color:#94a3b8; }
+    .iq-sev { display:inline-block; padding:2px 8px; border-radius:10px; font-size:0.75rem; font-weight:600; color:#fff; }
+    .iq-sev.safety { background:#dc2626; } .iq-sev.major { background:#ea580c; }
+    .iq-sev.repair { background:#2563eb; } .iq-sev.maintenance { background:#64748b; }
+    .iq-note { font-size:0.8rem; color:#64748b; margin-top:2px; }
+    .iq-totals { display:flex; gap:16px; flex-wrap:wrap; margin:16px 0; }
+    .iq-total { background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:12px 16px; min-width:180px; }
+    .iq-total b { display:block; font-size:1.4rem; color:#0f172a; }
+    .iq-total span { font-size:0.8rem; color:#64748b; }
+    .iq-warn { background:#fef3c7; border:1px solid #f59e0b; color:#92400e; padding:10px 14px; border-radius:8px; margin:12px 0; }
+    .iq-disclaimer { font-size:0.85rem; color:#475569; margin:12px 0; }
+    .iq-scroll { overflow-x:auto; }
+    .hidden { display:none; }
+  </style>
+</head>
+<body>
+  <header class="agent-header">
+    <div class="agent-header-inner">
+      <div class="agent-header-left">
+        <a href="/"><img src="/img/logo-full-light.png?v=20260521" alt="StructureWorks"></a>
+        <h1>AgentWorks<span>Inspection Quote</span></h1>
+      </div>
+      <div class="agent-header-right">
+        <a href="/agent-dashboard" class="btn-signout" style="margin-right:8px;">Back to Dashboard</a>
+        <button class="btn-signout" onclick="agentLogout()">Sign Out</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="agent-main">
+    <!-- Step 1: upload -->
+    <div class="contact-form-wrapper" id="step-upload" style="max-width:720px; margin:0 auto;">
+      <h3 style="font-size:1.4rem; margin-bottom:8px;">Inspection report to repair quote</h3>
+      <p style="color:#64748b; margin-bottom:24px; font-size:0.95rem;">Upload the home inspection report. We price the repairs, you pick what goes in the ask, and StructureWorks reviews the quote before it goes out.</p>
+
+      <form class="contact-form" id="upload-form" onsubmit="readReport(event)">
+        <div class="form-group">
+          <label for="address">Property Address *</label>
+          <input type="text" id="address" placeholder="Street address" required maxlength="200">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="city">City</label>
+            <input type="text" id="city" value="Knoxville" maxlength="100">
+          </div>
+          <div class="form-row" style="gap:16px;">
+            <div class="form-group">
+              <label for="state">State</label>
+              <input type="text" id="state" value="TN" maxlength="2">
+            </div>
+            <div class="form-group">
+              <label for="zip">ZIP *</label>
+              <input type="text" id="zip" placeholder="37919" maxlength="10" required>
+            </div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="buyer-name">Buyer Name *</label>
+            <input type="text" id="buyer-name" required maxlength="200">
+          </div>
+          <div class="form-group">
+            <label for="buyer-phone">Buyer Phone</label>
+            <input type="tel" id="buyer-phone" maxlength="40">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="buyer-email">Buyer Email</label>
+          <input type="email" id="buyer-email" maxlength="200">
+        </div>
+        <div class="form-group">
+          <label for="report">Inspection Report (PDF, up to 25 MB) *</label>
+          <input type="file" id="report" accept="application/pdf,.pdf" required>
+        </div>
+        <button type="submit" class="btn btn-primary btn-lg btn-full" id="read-btn">Read report</button>
+      </form>
+    </div>
+
+    <!-- Step 2: review and tick -->
+    <div class="projects-section hidden" id="step-review">
+      <div class="projects-header">
+        <h2>Pick the repairs for the ask</h2>
+        <button class="btn btn-primary" id="create-btn" onclick="createQuote()">Create quote</button>
+      </div>
+      <div id="iq-warning"></div>
+      <div class="iq-totals">
+        <div class="iq-total"><b id="t-request">$0</b><span>Suggested credit request (ticked items + 10%)</span></div>
+        <div class="iq-total"><b id="t-anchor">$0</b><span>Opening ask (high end)</span></div>
+        <div class="iq-total"><b id="t-range">$0</b><span>Plus foundation and structural items (range)</span></div>
+      </div>
+      <p class="iq-disclaimer" id="iq-novisit"></p>
+      <p class="iq-disclaimer">All figures are estimates from the report text. Items marked Review need a closer look or a specialist's bid.</p>
+      <div class="iq-scroll">
+        <table class="iq-table">
+          <thead><tr><th>Ask</th><th>Item</th><th>Finding</th><th>Repair</th><th>Qty</th><th>Price</th></tr></thead>
+          <tbody id="iq-lines"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Step 3: done -->
+    <div class="contact-form-wrapper hidden" id="step-done" style="max-width:720px; margin:0 auto; text-align:center;">
+      <h3 style="font-size:1.4rem; margin-bottom:8px;">Quote created</h3>
+      <p id="done-msg" style="color:#475569;"></p>
+      <a href="/agent-dashboard" class="btn btn-primary" style="margin-top:16px;">Back to Dashboard</a>
+    </div>
+  </main>
+
+  <script>
+    // ProjectWorks Cloud Functions (functions/src/inspectionQuote in structureworks-field).
+    const IQ_API = 'https://us-central1-projectworks-8b692.cloudfunctions.net';
+    const MAX_BYTES = 25 * 1024 * 1024;
+    let quote = null;
+
+    requireAuth((user, profile) => {
+      if (!profile || !profile.isApproved) window.location.href = '/agent-dashboard';
+    });
+
+    function esc(s) {
+      return String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    }
+    function usd(n) {
+      return '$' + Math.round(n).toLocaleString('en-US');
+    }
+    function newId() {
+      const a = new Uint8Array(12);
+      crypto.getRandomValues(a);
+      return Array.from(a, (b) => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    async function api(name, body) {
+      const token = await auth.currentUser.getIdToken();
+      const r = await fetch(`${IQ_API}/${name}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify(body),
+      });
+      const data = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error(data.error || 'Something went wrong. Try again, or call StructureWorks.');
+      return data;
+    }
+
+    async function readReport(e) {
+      e.preventDefault();
+      const file = document.getElementById('report').files[0];
+      if (!file) return;
+      if (file.size > MAX_BYTES) { showToast('The report is over 25 MB.', 'error'); return; }
+      const btn = document.getElementById('read-btn');
+      btn.disabled = true;
+      try {
+        btn.textContent = 'Uploading...';
+        const uid = auth.currentUser.uid;
+        const path = `inspectionReports/${uid}/${newId()}.pdf`;
+        await firebase.storage().ref(path).put(file, { contentType: 'application/pdf' });
+        btn.textContent = 'Reading the report...';
+        quote = await api('inspectionQuoteParse', {
+          storagePath: path,
+          fileName: file.name.slice(0, 200),
+          buyer: {
+            name: document.getElementById('buyer-name').value,
+            email: document.getElementById('buyer-email').value,
+            phone: document.getElementById('buyer-phone').value,
+          },
+          property: {
+            street: document.getElementById('address').value,
+            city: document.getElementById('city').value,
+            state: document.getElementById('state').value.toUpperCase(),
+            zip: document.getElementById('zip').value,
+          },
+        });
+        showReview();
+      } catch (err) {
+        showToast(err.message, 'error');
+        btn.textContent = 'Read report';
+        btn.disabled = false;
+      }
+    }
+
+    function showReview() {
+      document.getElementById('step-upload').classList.add('hidden');
+      document.getElementById('step-review').classList.remove('hidden');
+      document.getElementById('iq-novisit').textContent = quote.summary.noVisit;
+      document.getElementById('iq-warning').innerHTML = quote.warning ? `<div class="iq-warn">${esc(quote.warning)}</div>` : '';
+      const rows = quote.lines.filter((l) => l.mid > 0).map((l) => {
+        const price = l.rangeOnly ? `${usd(l.low)} to ${usd(l.high)}<div class="iq-note">Range only</div>` : usd(l.mid);
+        const note = [l.askReason && !l.inAsk ? l.askReason : '', l.needsReview ? `Review: ${l.reviewReason || 'check before asking'}` : '']
+          .filter(Boolean).map((t) => `<div class="iq-note">${esc(t)}</div>`).join('');
+        return `<tr id="row-${esc(l.id)}" class="${l.inAsk ? '' : 'off'}">
+          <td><input type="checkbox" data-id="${esc(l.id)}" ${l.inAsk ? 'checked' : ''} onchange="tick(this)"></td>
+          <td>${esc(l.ref || '')}<div><span class="iq-sev ${esc(l.severity)}">${esc(l.severity)}</span></div></td>
+          <td>${esc(l.finding)}${note}</td>
+          <td>${esc(l.repair)}<div class="iq-note">${esc(l.trade)}</div></td>
+          <td>${esc(l.quantity)}</td>
+          <td>${price}</td>
+        </tr>`;
+      });
+      document.getElementById('iq-lines').innerHTML = rows.join('');
+      totals();
+    }
+
+    function tick(box) {
+      const l = quote.lines.find((x) => x.id === box.dataset.id);
+      l.inAsk = box.checked;
+      document.getElementById('row-' + l.id).className = box.checked ? '' : 'off';
+      totals();
+    }
+
+    // Same rule as the server's summary: ticked single-number items at mid + 10%, rounded up to $250.
+    function totals() {
+      const on = quote.lines.filter((l) => l.inAsk);
+      const mid = on.filter((l) => !l.rangeOnly).reduce((s, l) => s + l.mid, 0);
+      const high = on.filter((l) => !l.rangeOnly).reduce((s, l) => s + l.high, 0);
+      const up = (x) => (x > 0 ? Math.ceil(x / 250) * 250 : 0);
+      const rng = on.filter((l) => l.rangeOnly);
+      document.getElementById('t-request').textContent = usd(up(mid * (1 + quote.summary.contingency)));
+      document.getElementById('t-anchor').textContent = usd(up(high));
+      document.getElementById('t-range').textContent = rng.length
+        ? `${usd(rng.reduce((s, l) => s + l.low, 0))} to ${usd(rng.reduce((s, l) => s + l.high, 0))}` : '$0';
+      document.getElementById('create-btn').disabled = on.length === 0;
+    }
+
+    async function createQuote() {
+      const btn = document.getElementById('create-btn');
+      btn.disabled = true;
+      btn.textContent = 'Creating...';
+      try {
+        const r = await api('inspectionQuoteSubmit', {
+          quoteId: quote.quoteId,
+          selectedLineIds: quote.lines.filter((l) => l.inAsk).map((l) => l.id),
+        });
+        document.getElementById('step-review').classList.add('hidden');
+        document.getElementById('step-done').classList.remove('hidden');
+        document.getElementById('done-msg').textContent = r.message;
+      } catch (err) {
+        showToast(err.message, 'error');
+        btn.textContent = 'Create quote';
+        btn.disabled = false;
+      }
+    }
+  </script>
+</body>
+</html>
