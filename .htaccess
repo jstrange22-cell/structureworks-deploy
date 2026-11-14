@@ -40,6 +40,7 @@
   RewriteRule ^agent-dashboard$ agent-dashboard.html [L]
   RewriteRule ^agent-admin$ agent-admin.html [L]
   RewriteRule ^agent-submit$ agent-submit.html [L]
+  RewriteRule ^agent-inspection-quote$ agent-inspection-quote.html [L]
 </IfModule>
 
 # Caching for static assets
