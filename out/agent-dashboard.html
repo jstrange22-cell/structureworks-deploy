@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agent Dashboard - AgentWorks</title>
+  <link rel="icon" href="/favicon.ico?v=202608261157" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/icons/favicon-32.png?v=202608261157">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/icons/favicon-16.png?v=202608261157">
+  <link rel="apple-touch-icon" href="/img/icons/apple-touch-icon.png?v=202608261157">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta name="theme-color" content="#2563eb">
+  <link rel="preload" as="font" type="font/woff2" href="/fonts/inter-latin-var.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="/fonts/montserrat-latin-var.woff2" crossorigin>
+  <link rel="stylesheet" href="site.css?v=20261112">
+  <link rel="stylesheet" href="agent.css?v=202608261157">
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="agent.js?v=202608261157"></script>
+  <meta name="robots" content="noindex,nofollow">
+  <script type="speculationrules">
+  {"prefetch":[{"source":"document","where":{"and":[{"href_matches":"/*"},{"not":{"href_matches":"/agent-*"}}]},"eagerness":"moderate"}]}
+  </script>
+</head>
+<body>
+  <header class="agent-header">
+    <div class="agent-header-inner">
+      <div class="agent-header-left">
+        <a href="/"><img src="/img/logo-full-light.png?v=202608261157" alt="StructureWorks"></a>
+        <h1>AgentWorks<span>Dashboard</span></h1>
+      </div>
+      <div class="agent-header-right">
+        <span class="agent-user-name" id="user-name"></span>
+        <button class="btn-signout" onclick="agentLogout()">Sign Out</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="agent-main" id="main-content">
+    <p style="color:#94a3b8; text-align:center; padding:48px;">Loading...</p>
+  </main>
+
+  <script>
+    // Watchdog: never leave the page stuck on "Loading…" (transient auth/network hiccup).
+    setTimeout(() => {
+      const el = document.getElementById('main-content');
+      if (el && el.textContent.indexOf('Loading...') !== -1) {
+        el.innerHTML = '<div class="pending-banner"><h2>Taking longer than expected</h2><p>Please refresh the page. If it keeps happening, call us at (865) 630-4073.</p><p style="margin-top:16px;"><a class="btn btn-primary" href="/agent-dashboard">Refresh</a></p></div>';
+      }
+    }, 12000);
+
+    requireAuth((user, profile) => {
+      document.getElementById('user-name').textContent = (profile && profile.fullName) || user.email || '';
+      loadJobs(user.uid);
+    });
+
+    function escapeHtml(s) {
+      return String(s == null ? '' : s).replace(/[&<>"]/g, (c) =>
+        ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    }
+
+    function fileChips(job) {
+      let html = '';
+      const photos = job.photos || [];
+      const docs = job.documents || [];
+      if (photos.length) {
+        html += '<div class="job-photos">' + photos.map((u) =>
+          `<a href="${u}" target="_blank" rel="noopener"><img src="${u}" alt="job photo" loading="lazy"></a>`).join('') + '</div>';
+      }
+      if (docs.length) {
+        html += '<div class="job-docs">' + docs.map((u, i) =>
+          `<a href="${u}" target="_blank" rel="noopener" class="job-doc">PDF ${i + 1}</a>`).join('') + '</div>';
+      }
+      return html;
+    }
+
+    function loadJobs(uid) {
+      getMyJobs(uid).then((jobs) => {
+        const active = jobs.filter((j) => ['new', 'contacted', 'quoted'].includes(j.status || 'new')).length;
+        const approved = jobs.filter((j) => ['converted', 'won'].includes(j.status)).length;
+
+        let html = `
+          <div class="summary-cards">
+            <div class="summary-card"><span class="card-number">${jobs.length}</span><span class="card-label">Total Jobs</span></div>
+            <div class="summary-card"><span class="card-number">${active}</span><span class="card-label">In Progress</span></div>
+            <div class="summary-card"><span class="card-number">${approved}</span><span class="card-label">Approved</span></div>
+          </div>
+          <div class="projects-section">
+            <div class="projects-header">
+              <h2>My Jobs</h2>
+              <a href="/agent-submit" class="btn btn-primary">+ Submit New Job</a>
+            </div>`;
+
+        if (!jobs.length) {
+          html += `<div class="no-projects">
+            <p>No jobs yet. Submit your first inspection-repair job to get started!</p>
+            <a href="/agent-submit" class="btn btn-primary" style="margin-top:16px;">Submit New Job</a>
+          </div>`;
+        } else {
+          html += '<div class="job-list">';
+          jobs.forEach((j) => {
+            html += `<div class="job-card">
+              <div class="job-card-top">
+                <div class="job-card-head">
+                  <h3>${escapeHtml(j.name) || 'Job'}</h3>
+                  ${j.address ? `<p class="job-addr">${escapeHtml(j.address)}</p>` : ''}
+                </div>
+                ${statusBadge(j.status || 'new')}
+              </div>
+              <div class="job-meta">
+                ${j.projectType ? `<span>${escapeHtml(j.projectType)}</span>` : ''}
+                <span>Submitted ${formatDate(j.createdAt)}</span>
+              </div>
+              ${j.details ? `<p class="job-desc">${escapeHtml(j.details)}</p>` : ''}
+              ${fileChips(j)}
+            </div>`;
+          });
+          html += '</div>';
+        }
+
+        html += '</div>';
+        document.getElementById('main-content').innerHTML = html;
+      }).catch(() => {
+        document.getElementById('main-content').innerHTML =
+          '<div class="pending-banner"><h2>Could not load your jobs</h2><p>Please refresh the page, or call us at (865) 630-4073.</p></div>';
+      });
+    }
+  </script>
+</body>
+</html>

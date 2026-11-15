@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agent Login - AgentWorks by StructureWorks</title>
+  <meta name="description" content="Log in to your AgentWorks account to submit and manage construction projects.">
+  <link rel="icon" href="/favicon.ico?v=202608261157" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/icons/favicon-32.png?v=202608261157">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/icons/favicon-16.png?v=202608261157">
+  <link rel="apple-touch-icon" href="/img/icons/apple-touch-icon.png?v=202608261157">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta name="theme-color" content="#2563eb">
+  <link rel="preload" as="font" type="font/woff2" href="/fonts/inter-latin-var.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="/fonts/montserrat-latin-var.woff2" crossorigin>
+  <link rel="stylesheet" href="site.css?v=20261112">
+  <link rel="stylesheet" href="agent.css?v=202608261157">
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="agent.js?v=202608261157"></script>
+  <!-- seo-meta -->
+  <meta name="robots" content="noindex,nofollow">
+  <script type="speculationrules">
+  {"prefetch":[{"source":"document","where":{"and":[{"href_matches":"/*"},{"not":{"href_matches":"/agent-*"}}]},"eagerness":"moderate"}]}
+  </script>
+</head>
+<body>
+  <div class="auth-page">
+    <div class="auth-card">
+      <div class="logo-center">
+        <img src="/img/logo-full-dark.png?v=202608261157" alt="StructureWorks">
+      </div>
+      <h2>AgentWorks</h2>
+      <p class="auth-subtitle">Sign in to manage your construction projects</p>
+
+      <div class="auth-tabs">
+        <button class="auth-tab active" onclick="showTab('login')">Login</button>
+        <button class="auth-tab" onclick="showTab('register')">Register</button>
+      </div>
+
+      <p class="auth-error" id="auth-error"></p>
+
+      <button type="button" class="btn-google" onclick="handleGoogleLogin()">
+        <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+        Sign in with Google
+      </button>
+
+      <div class="auth-divider">
+        <span>or use email</span>
+      </div>
+
+      <!-- Login Form -->
+      <form class="auth-form" id="login-form" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label for="login-email">Email</label>
+          <input type="email" id="login-email" placeholder="your.email@example.com" required>
+        </div>
+        <div class="form-group">
+          <label for="login-password">Password</label>
+          <input type="password" id="login-password" placeholder="Enter your password" required>
+        </div>
+        <div class="auth-forgot">
+          <a href="#" onclick="handleForgotPassword(event)">Forgot Password?</a>
+        </div>
+        <button type="submit" class="btn btn-primary btn-lg btn-full" id="login-btn">Sign In</button>
+      </form>
+
+      <!-- Register Form -->
+      <form class="auth-form" id="register-form" style="display:none;" onsubmit="handleRegister(event)">
+        <div class="form-group">
+          <label for="reg-name">Full Name *</label>
+          <input type="text" id="reg-name" placeholder="Your full name" required>
+        </div>
+        <div class="form-group">
+          <label for="reg-email">Email *</label>
+          <input type="email" id="reg-email" placeholder="your.email@example.com" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="reg-phone">Phone</label>
+            <input type="tel" id="reg-phone" placeholder="(865) 555-0000">
+          </div>
+          <div class="form-group">
+            <label for="reg-license">License #</label>
+            <input type="text" id="reg-license" placeholder="Real estate license">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="reg-company">Brokerage / Company</label>
+          <input type="text" id="reg-company" placeholder="Your brokerage name">
+        </div>
+        <div class="form-group">
+          <label for="reg-password">Password *</label>
+          <input type="password" id="reg-password" placeholder="Create a password (min 6 chars)" required minlength="6">
+        </div>
+        <div class="form-group">
+          <label for="reg-confirm">Confirm Password *</label>
+          <input type="password" id="reg-confirm" placeholder="Confirm your password" required minlength="6">
+        </div>
+        <button type="submit" class="btn btn-primary btn-lg btn-full" id="register-btn">Create Account</button>
+      </form>
+
+      <p style="text-align:center; margin-top:24px; color:#64748b; font-size:0.85rem;">
+        <a href="/" style="color:#2563eb; font-weight:500;">&larr; Back to StructureWorks</a>
+      </p>
+    </div>
+  </div>
+
+  <script>
+    // Check if already logged in
+    initFirebase();
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        getAgentProfile(user.uid).then(profile => {
+          if (profile && profile.role === 'admin') {
+            window.location.href = '/agent-admin';
+          } else {
+            window.location.href = '/agent-dashboard';
+          }
+        });
+      }
+    });
+
+    function showTab(tab) {
+      document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+      document.getElementById('auth-error').style.display = 'none';
+      if (tab === 'login') {
+        document.querySelectorAll('.auth-tab')[0].classList.add('active');
+        document.getElementById('login-form').style.display = 'flex';
+        document.getElementById('register-form').style.display = 'none';
+      } else {
+        document.querySelectorAll('.auth-tab')[1].classList.add('active');
+        document.getElementById('login-form').style.display = 'none';
+        document.getElementById('register-form').style.display = 'flex';
+      }
+    }
+
+    function showError(msg) {
+      const el = document.getElementById('auth-error');
+      el.textContent = msg;
+      el.style.display = 'block';
+    }
+
+    function handleLogin(e) {
+      e.preventDefault();
+      const btn = document.getElementById('login-btn');
+      btn.textContent = 'Signing in...';
+      btn.disabled = true;
+
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+
+      agentLogin(email, password)
+        .then(cred => getAgentProfile(cred.user.uid))
+        .then(profile => {
+          if (profile && profile.role === 'admin') {
+            window.location.href = '/agent-admin';
+          } else {
+            window.location.href = '/agent-dashboard';
+          }
+        })
+        .catch(err => {
+          showError(err.message.replace('Firebase: ', ''));
+          btn.textContent = 'Sign In';
+          btn.disabled = false;
+        });
+    }
+
+    function handleRegister(e) {
+      e.preventDefault();
+      const btn = document.getElementById('register-btn');
+
+      const password = document.getElementById('reg-password').value;
+      const confirm = document.getElementById('reg-confirm').value;
+      if (password !== confirm) {
+        showError('Passwords do not match.');
+        return;
+      }
+
+      btn.textContent = 'Creating account...';
+      btn.disabled = true;
+
+      const email = document.getElementById('reg-email').value;
+      const profileData = {
+        fullName: document.getElementById('reg-name').value,
+        phone: document.getElementById('reg-phone').value,
+        company: document.getElementById('reg-company').value,
+        licenseNumber: document.getElementById('reg-license').value
+      };
+
+      agentRegister(email, password, profileData)
+        .then(() => {
+          window.location.href = '/agent-dashboard';
+        })
+        .catch(err => {
+          showError(err.message.replace('Firebase: ', ''));
+          btn.textContent = 'Create Account';
+          btn.disabled = false;
+        });
+    }
+
+    function handleGoogleLogin() {
+      agentGoogleLogin()
+        .then(result => getAgentProfile(result.user.uid))
+        .then(profile => {
+          if (profile && profile.role === 'admin') {
+            window.location.href = '/agent-admin';
+          } else {
+            window.location.href = '/agent-dashboard';
+          }
+        })
+        .catch(err => {
+          showError(err.message.replace('Firebase: ', ''));
+        });
+    }
+
+    function handleForgotPassword(e) {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value;
+      if (!email) {
+        showError('Please enter your email address first.');
+        return;
+      }
+      resetPassword(email)
+        .then(() => showError('Password reset email sent! Check your inbox.'))
+        .catch(err => showError(err.message.replace('Firebase: ', '')));
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,135 @@
+/* SW Roofing & Exteriors division layer for structureworkstn.com
+ * Loaded only on /roofing, /exteriors and /roofing-<city> pages, on top of site.css.
+ * Brand tokens live here; every colour below comes from them. */
+:root {
+  --sw-blue: #2563eb;
+  --sw-blue-deep: #1d4ed8;
+  --sw-sky: #60a5fa;
+  --sw-navy: #0b1324;
+  --sw-navy-2: #111c33;
+  --sw-ink: #0f172a;
+  --sw-muted: #64748b;
+  --sw-line: #e2e8f0;
+  --sw-paper: #ffffff;
+  --sw-paper-2: #f8fafc;
+  --sw-ease: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --sw-radius: 14px;
+}
+
+/* ---------- small designed details ---------- */
+::selection { background: var(--sw-blue); color: #fff; }
+html { -webkit-tap-highlight-color: rgba(37, 99, 235, 0.18); }
+:focus-visible { outline: 3px solid var(--sw-sky); outline-offset: 3px; border-radius: 6px; }
+.contact-form input, .contact-form textarea, .contact-form select { font-size: 16px; }
+
+/* ---------- hero ---------- */
+.hero.hero-image-bg { overflow: hidden; }
+.hero .hero-content h1 { perspective: 800px; }
+.sw-w { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: 0.06em; }
+.sw-wi { display: inline-block; transform-origin: 50% 100%; will-change: transform; }
+.sw-scrollcue {
+  position: absolute; left: 50%; bottom: 28px; transform: translateX(-50%);
+  width: 26px; height: 42px; border: 2px solid rgba(255,255,255,0.55); border-radius: 14px; z-index: 3;
+}
+.sw-scrollcue::after {
+  content: ""; position: absolute; left: 50%; top: 8px; width: 4px; height: 8px; margin-left: -2px;
+  border-radius: 2px; background: #fff; animation: sw-cue 1.6s var(--sw-ease) infinite;
+}
+@keyframes sw-cue { 0% { opacity: 0; transform: translateY(0); } 30% { opacity: 1; } 100% { opacity: 0; transform: translateY(14px); } }
+
+/* ---------- signature: the ridge line ----------
+ * Every section title gets a roof-pitch line that draws itself as the section comes in. */
+.sw-ridge { display: block; width: 92px; height: 18px; margin: 10px auto 0; overflow: visible; }
+.section-header-center .sw-ridge { margin-left: auto; margin-right: auto; }
+.contact-info .sw-ridge, .aeb-copy .sw-ridge { margin-left: 0; }
+.sw-ridge path { fill: none; stroke: var(--sw-blue); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.ai-estimate-band .sw-ridge path, .cta-section .sw-ridge path { stroke: var(--sw-sky); }
+
+/* ---------- cards: hover states ---------- */
+.feature-card, .step-card, .financing-card, .vendor-card, .ba-card, .sw-city-card, .faq-item {
+  transition: transform 0.45s var(--sw-ease), box-shadow 0.45s var(--sw-ease), border-color 0.45s var(--sw-ease);
+}
+.feature-card:hover, .step-card:hover, .financing-card:hover, .sw-city-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(37, 99, 235, 0.45);
+  box-shadow: 0 18px 40px -18px rgba(37, 99, 235, 0.45);
+}
+.vendor-card:hover { transform: translateY(-4px); border-color: rgba(37, 99, 235, 0.4); }
+.ba-card { overflow: hidden; }
+.ba-card img { transition: transform 0.5s var(--sw-ease); }
+.ba-card:hover img { transform: scale(1.1); }
+.btn-primary { position: relative; overflow: hidden; transition: box-shadow 0.35s var(--sw-ease), transform 0.35s var(--sw-ease); }
+.btn-primary:hover { box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.35), 0 12px 28px -10px rgba(37, 99, 235, 0.8); transform: translateY(-1px); }
+.btn-primary::after {
+  content: ""; position: absolute; top: 0; left: -60%; width: 40%; height: 100%;
+  background: linear-gradient(100deg, transparent, rgba(255,255,255,0.35), transparent);
+  transform: skewX(-20deg); transition: left 0.6s var(--sw-ease);
+}
+.btn-primary:hover::after { left: 120%; }
+
+/* ---------- trust strip: manufacturer credential pill ---------- */
+.trust-badge.sw-cred { font-weight: 700; color: var(--sw-blue-deep); }
+
+/* ---------- process section progress bar ---------- */
+.sw-process-track { position: relative; height: 4px; border-radius: 4px; background: var(--sw-line); margin: 0 auto 28px; max-width: 960px; overflow: hidden; }
+.sw-process-fill { position: absolute; inset: 0; transform-origin: 0 50%; transform: scaleX(0); background: linear-gradient(90deg, var(--sw-blue), var(--sw-sky)); }
+
+/* ---------- roofing near you (city links) ---------- */
+.sw-cities { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; max-width: 980px; margin: 0 auto; }
+.sw-city-card {
+  position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: 2px;
+  padding: 18px 48px 18px 20px; min-height: 44px; border: 1px solid var(--sw-line); border-radius: var(--sw-radius);
+  background: var(--sw-paper); color: var(--sw-ink); text-decoration: none;
+}
+.sw-city-card strong { font-weight: 700; white-space: nowrap; }
+.sw-city-card span { color: var(--sw-muted); font-weight: 500; font-size: 0.9rem; }
+.sw-city-card::after { content: "\2192"; position: absolute; right: 20px; top: 50%; margin-top: -0.6em; color: var(--sw-blue); font-weight: 700; transition: transform 0.35s var(--sw-ease); }
+.sw-city-card:hover::after { transform: translateX(4px); }
+@media (max-width: 768px) { .sw-cities { grid-template-columns: 1fr; } }
+
+/* ---------- city page intro ---------- */
+.sw-city-intro { max-width: 820px; margin: 0 auto; font-size: 1.08rem; line-height: 1.75; color: #334155; }
+.sw-city-intro p + p { margin-top: 1rem; }
+.sw-city-points { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; max-width: 980px; margin: 32px auto 0; }
+.sw-city-points .feature-card { text-align: left; }
+@media (max-width: 768px) { .sw-city-points { grid-template-columns: 1fr; } }
+.sw-crumbs { font-size: 0.85rem; color: rgba(255,255,255,0.8); margin-bottom: 14px; }
+.sw-crumbs a { color: #fff; text-decoration: underline; text-underline-offset: 3px; }
+
+/* ---------- full-screen mobile menu ---------- */
+#nav-links .sw-menu-cta { display: none; }
+@media (max-width: 1080px) {
+  #nav-links.open {
+    position: fixed; inset: 0; z-index: 998;
+    display: flex; flex-direction: column; justify-content: center; align-items: flex-start;
+    gap: 6px; padding: 96px 32px 140px; margin: 0;
+    background: radial-gradient(120% 80% at 100% 0%, var(--sw-navy-2), var(--sw-navy));
+    height: 100dvh; overflow-y: auto; list-style: none;
+  }
+  #nav-links.open li { width: 100%; border: 0; }
+  #nav-links.open a { display: block; padding: 10px 0; min-height: 44px; font-family: Montserrat, Inter, sans-serif; font-size: clamp(1.6rem, 7vw, 2.4rem); font-weight: 800; color: #fff !important; letter-spacing: -0.01em; border-bottom: 1px solid rgba(255,255,255,0.1) !important; }
+  #nav-links.open a.active { color: var(--sw-sky) !important; }
+  #nav-links.open a::after { display: none; }
+  #nav-links.open .sw-menu-cta { display: block; margin-top: 18px; }
+  #nav-links.open .sw-menu-cta a { border-bottom: 0 !important; font-size: 1.05rem; font-weight: 700; padding: 14px 18px; border-radius: 999px; text-align: center; }
+  #nav-links.open .sw-menu-cta a.sw-call { background: #16a34a; }
+  #nav-links.open .sw-menu-cta a.sw-quote { background: var(--sw-blue); }
+  #mobile-toggle { position: relative; z-index: 999; }
+  html.sw-menu-open, html.sw-menu-open body { overflow: hidden; }
+  html.sw-menu-open #navbar { background: transparent; box-shadow: none; }
+  html.sw-menu-open .sw-lift-chat, html.sw-menu-open .sticky-call { display: none !important; }
+}
+
+/* ---------- route transition ---------- */
+html.sw-leaving main { opacity: 0; transform: translateY(-10px); transition: opacity 0.25s ease, transform 0.25s ease; }
+
+/* ---------- chat bubble clear of the sticky call bar ---------- */
+@media (max-width: 768px) { .sw-lift-chat { bottom: calc(var(--sw-sticky-h, 64px) + 14px) !important; } }
+
+/* ---------- reduced motion: nothing moves, nothing hides ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .sw-scrollcue::after { animation: none; }
+  .feature-card, .step-card, .financing-card, .vendor-card, .ba-card, .ba-card img, .sw-city-card, .btn-primary { transition: none !important; transform: none !important; }
+  .btn-primary::after { display: none; }
+  html.sw-leaving main { opacity: 1; transform: none; }
+}
